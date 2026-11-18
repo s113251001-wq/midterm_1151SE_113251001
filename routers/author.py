@@ -138,3 +138,29 @@ async def submit(
             (sub_id, user["id"])
         )
     return RedirectResponse(url="/author/dashboard", status_code=303)
+
+
+# 8. 作者查看文章詳情
+@router.get("/author/detail/{sub_id}", response_class=HTMLResponse)
+async def detail(
+    sub_id: int,
+    request: Request,
+    user = Depends(require_author),
+    conn = Depends(getDB)
+):
+    async with conn.cursor() as cur:
+        await cur.execute(
+            "SELECT * FROM submissions WHERE id = %s AND author_id = %s",
+            (sub_id, user["id"])
+        )
+        submission = await cur.fetchone()
+
+    # 如果找不到，或者試圖看別人的稿件，就擋下來
+    if not submission:
+        raise HTTPException(status_code=404, detail="找不到稿件或無權限")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="author_detail.html",
+        context={"user": user, "submission": submission}
+    )

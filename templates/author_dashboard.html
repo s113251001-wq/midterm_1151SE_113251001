@@ -20,7 +20,11 @@
         {% for sub in submissions %}
         <tr>
             <td>{{ sub["category"] }}</td>
-            <td>{{ sub["title"] }}</td>
+            <td>
+             <a href="/author/detail/{{ sub['id'] }}" style="color: #007bff; text-decoration: underline; font-weight: bold;">
+             {{ sub["title"] }}
+             </a>
+            </td>
             <td>
                 <span class="badge badge-{{ sub['status'] }}">{{ sub["status"] }}</span>
             </td>

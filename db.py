@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from psycopg_pool import AsyncConnectionPool
 from psycopg.rows import dict_row
-from dotenv import load_dotenv  # 加入這行
+from dotenv import load_dotenv  
 
 # 載入 .env 檔案
 load_dotenv()

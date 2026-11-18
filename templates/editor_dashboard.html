@@ -2,8 +2,8 @@
 
 {% block content %}
 <h2>待審查稿件清單</h2>
-
-<table class="data-table">
+{% if pending_submissions %}
+<table class="data-table" style="margin-bottom: 40px;">
     <thead>
         <tr>
             <th>作者</th>
@@ -14,7 +14,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for sub in submissions %}
+        {% for sub in pending_submissions %}
         <tr>
             <td>{{ sub["author_name"] }}</td>
             <td>{{ sub["category"] }}</td>
@@ -24,11 +24,47 @@
                 <a href="/editor/detail/{{ sub['id'] }}" class="btn-link">查看內容 / 審查</a>
             </td>
         </tr>
-        {% else %}
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div style="background: white; padding: 20px; text-align: center; color: #666; border-radius: 8px; margin-bottom: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+    目前沒有待審查的稿件。
+</div>
+{% endif %}
+
+<hr style="border: 0; border-top: 1px solid #ddd; margin: 40px 0;">
+
+<h2>已通過稿件 (歷史紀錄)</h2>
+{% if approved_submissions %}
+<table class="data-table">
+    <thead>
         <tr>
-            <td colspan="5" style="text-align: center; color: #666;">目前沒有待審查的稿件。</td>
+            <th>作者</th>
+            <th>類別</th>
+            <th>標題</th>
+            <th>通過時間</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sub in approved_submissions %}
+        <tr>
+            <td>{{ sub["author_name"] }}</td>
+            <td>{{ sub["category"] }}</td>
+            <td>{{ sub["title"] }}</td>
+            <td>{{ sub["updated_at"].strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>
+                <a href="/editor/detail/{{ sub['id'] }}" class="btn-link">查看內容</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+<div style="background: white; padding: 20px; text-align: center; color: #666; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+    目前沒有已通過的稿件。
+</div>
+{% endif %}
+
 {% endblock %}

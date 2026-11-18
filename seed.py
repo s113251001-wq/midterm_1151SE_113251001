@@ -1,8 +1,3 @@
-"""
-插入兩個測試帳號。
-執行方式：python seed.py
-前提：已在 Adminer / psql 執行過 schema.sql（資料表必須存在）
-"""
 
 import sys
 import os
@@ -14,12 +9,12 @@ from dotenv import load_dotenv  # 載入環境變數套件
 # 1. 載入 .env 檔案
 load_dotenv()
 
-# 2. 從環境變數讀取連線字串（這裡不再有明文密碼）
+# 2. 從環境變數讀取連線字串
 CONNINFO = os.getenv("DATABASE_URL")
 
 # 防呆：如果沒有設定 .env，就報錯提醒
 if not CONNINFO:
-    print("❌ 找不到資料庫連線設定 (DATABASE_URL)。")
+    print("找不到資料庫連線設定 (DATABASE_URL)。")
     print("請確認根目錄有 .env 檔案，且內容包含 DATABASE_URL=...")
     sys.exit(1)
 

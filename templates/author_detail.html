@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>檢視稿件內容</h2>
+        <a href="/author/dashboard" class="btn-secondary" style="text-decoration: none;">返回清單</a>
+    </div>
+
+    <div class="detail-group">
+        <label>當前狀態</label>
+        <div class="detail-value">
+            <span class="badge badge-{{ submission['status'] }}">{{ submission["status"] }}</span>
+        </div>
+    </div>
+    
+    <div class="detail-group">
+        <label>類別</label>
+        <div class="detail-value">{{ submission["category"] }}</div>
+    </div>
+
+    <div class="detail-group">
+        <label>標題</label>
+        <div class="detail-value" style="font-weight: bold; font-size: 1.2rem;">{{ submission["title"] }}</div>
+    </div>
+
+    <div class="detail-group">
+        <label>文章內容</label>
+        <div class="detail-value content-box">
+            {{ submission["content"] | replace('\n', '<br>') | safe }}
+        </div>
+    </div>
+
+    <div class="detail-group">
+        <label>最後更新時間</label>
+        <div class="detail-value">{{ submission["updated_at"].strftime('%Y-%m-%d %H:%M') }}</div>
+    </div>
+
+    {% if submission["status"] == "編輯中" %}
+    <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
+        <a href="/author/edit/{{ submission['id'] }}" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto; padding: 10px 30px;">編輯此稿件</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

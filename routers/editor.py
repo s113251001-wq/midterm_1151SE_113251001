@@ -8,7 +8,7 @@ from deps import require_editor
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-# 1. 編輯首頁：查看待審查清單 (需 JOIN users 取得作者名稱)
+# 1. 編輯首頁：查看待審查清單 & 已通過清單
 @router.get("/editor/dashboard", response_class=HTMLResponse)
 async def dashboard(
     request: Request,
@@ -16,6 +16,7 @@ async def dashboard(
     conn = Depends(getDB)
 ):
     async with conn.cursor() as cur:
+        # 查詢 1：待審查清單 (審查中)
         await cur.execute(
             """SELECT s.id, s.category, s.title, s.updated_at, u.username AS author_name
                FROM submissions s
@@ -23,15 +24,29 @@ async def dashboard(
                WHERE s.status = '審查中'
                ORDER BY s.updated_at ASC"""
         )
-        submissions = await cur.fetchall()
+        pending_submissions = await cur.fetchall()
+
+        # 查詢 2：已處理清單 (已通過)
+        await cur.execute(
+            """SELECT s.id, s.category, s.title, s.updated_at, u.username AS author_name
+               FROM submissions s
+               JOIN users u ON s.author_id = u.id
+               WHERE s.status = '已通過'
+               ORDER BY s.updated_at DESC"""
+        )
+        approved_submissions = await cur.fetchall()
 
     return templates.TemplateResponse(
         request=request,
         name="editor_dashboard.html",
-        context={"user": user, "submissions": submissions}
+        context={
+            "user": user, 
+            "pending_submissions": pending_submissions,
+            "approved_submissions": approved_submissions
+        }
     )
 
-# 2. 查看稿件詳情
+# 2. 查看稿件詳情 (移除了狀態防呆，讓編輯可以看歷史紀錄)
 @router.get("/editor/detail/{sub_id}", response_class=HTMLResponse)
 async def detail(
     sub_id: int,
@@ -51,10 +66,6 @@ async def detail(
 
     if not submission:
         raise HTTPException(status_code=404, detail="找不到該稿件")
-        
-    # 防呆：只能看審查中的稿件
-    if submission["status"] != "審查中":
-        return RedirectResponse(url="/editor/dashboard", status_code=303)
 
     return templates.TemplateResponse(
         request=request,
@@ -70,7 +81,6 @@ async def approve(
     conn = Depends(getDB)
 ):
     async with conn.cursor() as cur:
-        # 防呆：WHERE 條件包含 status = '審查中'
         await cur.execute(
             """UPDATE submissions 
                SET status = '已通過', updated_at = CURRENT_TIMESTAMP 
@@ -87,7 +97,6 @@ async def reject(
     conn = Depends(getDB)
 ):
     async with conn.cursor() as cur:
-        # 防呆：WHERE 條件包含 status = '審查中'
         await cur.execute(
             """UPDATE submissions 
                SET status = '編輯中', updated_at = CURRENT_TIMESTAMP 

@@ -8,6 +8,13 @@
     </div>
 
     <div class="detail-group">
+        <label>當前狀態</label>
+        <div class="detail-value">
+            <span class="badge badge-{{ submission['status'] }}">{{ submission["status"] }}</span>
+        </div>
+    </div>
+
+    <div class="detail-group">
         <label>作者</label>
         <div class="detail-value">{{ submission["author_name"] }}</div>
     </div>
@@ -30,13 +37,21 @@
     </div>
 
     <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
-        <form method="POST" action="/editor/approve/{{ submission['id'] }}" style="display:inline;">
-            <button type="submit" class="btn-primary" style="background-color: #28a745; width: auto; padding: 10px 30px;">通過稿件</button>
-        </form>
-        
-        <form method="POST" action="/editor/reject/{{ submission['id'] }}" style="display:inline; margin-left: 20px;">
-            <button type="submit" class="btn-primary" style="background-color: #dc3545; width: auto; padding: 10px 30px;">退回稿件</button>
-        </form>
+        {% if submission["status"] == "審查中" %}
+            <!-- 只有審查中才顯示按鈕 -->
+            <form method="POST" action="/editor/approve/{{ submission['id'] }}" style="display:inline;">
+                <button type="submit" class="btn-primary" style="background-color: #28a745; width: auto; padding: 10px 30px;">通過稿件</button>
+            </form>
+            
+            <form method="POST" action="/editor/reject/{{ submission['id'] }}" style="display:inline; margin-left: 20px;">
+                <button type="submit" class="btn-primary" style="background-color: #dc3545; width: auto; padding: 10px 30px;">退回稿件</button>
+            </form>
+        {% else %}
+            <!-- 已通過的歷史紀錄只顯示文字 -->
+            <div style="color: #666; font-size: 1.1rem;">
+                此稿件狀態為 <strong>{{ submission["status"] }}</strong>，無需再進行審查。
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
