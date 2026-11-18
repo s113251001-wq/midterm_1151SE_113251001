@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>作者首頁</title>
+</head>
+<body>
+    <h2>作者首頁</h2>
+    <p>歡迎，{{ user.username }}</p>
+
+    <a href="/author/{{ user.id }}/create">新增投稿</a>
+    <a href="/">登出</a>
+
+    <hr>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>類別</th>
+            <th>標題</th>
+            <th>狀態</th>
+            <th>操作</th>
+        </tr>
+
+        {% for article in articles %}
+        <tr>
+            <td>{{ article.category }}</td>
+            <td>{{ article.title }}</td>
+            <td>{{ article.status }}</td>
+            <td>
+                {% if article.status == "編輯中" %}
+                    之後加入編輯 / 刪除 / 送出
+                {% else %}
+                    不可操作
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
