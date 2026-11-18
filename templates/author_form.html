@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{% if submission %}編輯投稿{% else %}新增投稿{% endif %}</h2>
+    
+    <form method="POST" action="{% if submission %}/author/edit/{{ submission['id'] }}{% else %}/author/new{% endif %}">
+        <div class="form-group">
+            <label>類別</label>
+            <input type="text" name="category" value="{{ submission['category'] if submission else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>標題</label>
+            <input type="text" name="title" value="{{ submission['title'] if submission else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>文章內容</label>
+            <textarea name="content" rows="10" required>{{ submission['content'] if submission else '' }}</textarea>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn-primary">儲存</button>
+            <a href="/author/dashboard" class="btn-secondary" style="text-decoration: none; margin-left: 10px;">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

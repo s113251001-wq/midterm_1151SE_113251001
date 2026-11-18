@@ -1,19 +1,23 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <title>登入</title>
-</head>
-<body>
-    <h2>投稿審查系統登入</h2>
-    <form action="/login" method="post">
-        <label>帳號：</label>
-        <input type="text" name="username" required><br><br>
+{% extends "base.html" %}
 
-        <label>密碼：</label>
-        <input type="password" name="password" required><br><br>
+{% block content %}
+<div class="login-box">
+    <h2>系統登入</h2>
+    
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
 
-        <button type="submit">登入</button>
+    <form method="POST" action="/login">
+        <div class="form-group">
+            <label>帳號</label>
+            <input type="text" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+            <label>密碼</label>
+            <input type="password" name="password" required>
+        </div>
+        <button type="submit" class="btn-primary">登入</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

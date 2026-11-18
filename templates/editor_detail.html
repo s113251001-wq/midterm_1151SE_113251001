@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>稿件審查</h2>
+        <a href="/editor/dashboard" class="btn-secondary" style="text-decoration: none;">返回清單</a>
+    </div>
+
+    <div class="detail-group">
+        <label>作者</label>
+        <div class="detail-value">{{ submission["author_name"] }}</div>
+    </div>
+    
+    <div class="detail-group">
+        <label>類別</label>
+        <div class="detail-value">{{ submission["category"] }}</div>
+    </div>
+
+    <div class="detail-group">
+        <label>標題</label>
+        <div class="detail-value" style="font-weight: bold; font-size: 1.2rem;">{{ submission["title"] }}</div>
+    </div>
+
+    <div class="detail-group">
+        <label>文章內容</label>
+        <div class="detail-value content-box">
+            {{ submission["content"] | replace('\n', '<br>') | safe }}
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
+        <form method="POST" action="/editor/approve/{{ submission['id'] }}" style="display:inline;">
+            <button type="submit" class="btn-primary" style="background-color: #28a745; width: auto; padding: 10px 30px;">通過稿件</button>
+        </form>
+        
+        <form method="POST" action="/editor/reject/{{ submission['id'] }}" style="display:inline; margin-left: 20px;">
+            <button type="submit" class="btn-primary" style="background-color: #dc3545; width: auto; padding: 10px 30px;">退回稿件</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

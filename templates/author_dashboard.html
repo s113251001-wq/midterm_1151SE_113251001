@@ -1,40 +1,51 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <title>作者首頁</title>
-</head>
-<body>
-    <h2>作者首頁</h2>
-    <p>歡迎，{{ user.username }}</p>
+{% extends "base.html" %}
 
-    <a href="/author/{{ user.id }}/create">新增投稿</a>
-    <a href="/">登出</a>
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>我的投稿清單</h2>
+    <a href="/author/new" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto;">＋ 新增投稿</a>
+</div>
 
-    <hr>
-
-    <table border="1" cellpadding="10">
+<table class="data-table">
+    <thead>
         <tr>
             <th>類別</th>
             <th>標題</th>
-            <th>狀態</th>
+            <th>審查狀態</th>
+            <th>最後更新時間</th>
             <th>操作</th>
         </tr>
-
-        {% for article in articles %}
+    </thead>
+    <tbody>
+        {% for sub in submissions %}
         <tr>
-            <td>{{ article.category }}</td>
-            <td>{{ article.title }}</td>
-            <td>{{ article.status }}</td>
+            <td>{{ sub["category"] }}</td>
+            <td>{{ sub["title"] }}</td>
             <td>
-                {% if article.status == "編輯中" %}
-                    之後加入編輯 / 刪除 / 送出
+                <span class="badge badge-{{ sub['status'] }}">{{ sub["status"] }}</span>
+            </td>
+            <td>{{ sub["updated_at"].strftime('%Y-%m-%d %H:%M') }}</td>
+            <td class="action-links">
+                {% if sub["status"] == "編輯中" %}
+                    <a href="/author/edit/{{ sub['id'] }}">編輯</a>
+                    
+                    <form method="POST" action="/author/submit/{{ sub['id'] }}" style="display:inline;">
+                        <button type="submit" class="btn-link">送出投稿</button>
+                    </form>
+
+                    <form method="POST" action="/author/delete/{{ sub['id'] }}" style="display:inline;" onsubmit="return confirm('確定要刪除嗎？');">
+                        <button type="submit" class="btn-link text-danger">刪除</button>
+                    </form>
                 {% else %}
-                    不可操作
+                    <span style="color: #999;">無法操作</span>
                 {% endif %}
             </td>
         </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" style="text-align: center;">目前沒有稿件，請點擊右上方新增。</td>
+        </tr>
         {% endfor %}
-    </table>
-</body>
-</html>
+    </tbody>
+</table>
+{% endblock %}
