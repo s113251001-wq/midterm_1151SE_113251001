@@ -5,7 +5,7 @@ from db import lifespan
 from routers import auth, author, editor  
 
 app = FastAPI(lifespan=lifespan)
-app.add_middleware(SessionMiddleware, secret_key="你的亂碼")
+app.add_middleware(SessionMiddleware, secret_key="e8f4a2b7c9d1e5f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
